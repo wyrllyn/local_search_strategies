@@ -81,3 +81,16 @@ vector<string> tokenize(string toSplit, string token) {
     result.push_back(toSplit);
     return result;
 }
+
+void write_res(string fileName, int64_t c1, int64_t c2) {
+
+   // cout << "test" << endl;
+    ofstream ofs;
+    
+    ofs.open("results.txt", ios::out | ios::app);
+
+    if(ofs) {   
+        ofs << c1<< " " << c2 << " " << endl;
+        ofs.close();
+    }
+}
