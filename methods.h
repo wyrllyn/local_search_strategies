@@ -17,6 +17,8 @@ int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibi
 
 int indexOfMaxValue(vector<int> v);
 
+int indexOfMaxValue2(vector<int> v);
+
 int64_t updateCost(int **D, int** F, vector<int> sol, int ti, int tj);
 
 #endif

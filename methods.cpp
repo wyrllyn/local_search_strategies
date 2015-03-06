@@ -63,7 +63,33 @@ int indexOfMaxValue(vector<int> v) {
 			maxval = v[i];
 		}
 	}
+	cout << "------------------------ best ME value is " << maxval << endl;
 	return index;
+}
+
+// uses rand if equalties 
+int indexOfMaxValue2(vector<int> v) {
+	int maxval = 0;
+	vector<int> index;
+	index.push_back(-1);
+	for (int i = 0; i < v.size(); i++) {
+		if (v[i] > maxval) {
+			index.clear();
+			index.push_back(i);
+			maxval = v[i];
+		}
+		else if (v[i] == maxval && maxval > 0) {
+			index.push_back(i);
+		}
+	}
+	cout << "------------------------ size = " << index.size() << endl;
+	cout << "------------------------ best ME value is " << maxval << endl;
+	if (index.size() == 1) return index[0];
+	else {
+		int t = rand() % index.size();
+		//cout << "choses t= " << t << endl;
+		return index[t];
+	}
 }
 
 int64_t updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
