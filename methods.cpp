@@ -39,11 +39,13 @@ int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibi
 
 		secondcost = solCost;
 
-		secondcost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+	//	secondcost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
-		secondcost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+	//	secondcost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		secondcost = calculate_cost(D,F,sol);
 
 		//tmpcost = calculate_cost(D,F,sol);
 
@@ -52,6 +54,86 @@ int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibi
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 	}
 	return nb;
+}
+
+int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost, bool * modif) {
+	int64_t tmpBestCost = (*bestCost);
+	vector<int> index;
+	index.push_back(-1);
+
+	for (int i = 0; i < possibilities.size(); i++) {
+		int64_t tmpCost = currentCost;
+
+	//	tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+
+	//	tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		tmpCost = calculate_cost(D,F,sol);
+
+		if(tmpCost < tmpBestCost) {
+			index.clear();
+			index.push_back(i);
+			tmpBestCost = tmpCost;
+			(*modif) = true;
+		}
+		else if (tmpCost == tmpBestCost && tmpCost > xcost) {
+			if (index[i] == -1) index.clear();
+			index.push_back(i);
+		}
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+	}
+
+	if (index[0] != -1) {
+		(*bestCost) = tmpBestCost;
+		//cout << "#### next swap will be on " << possibilities[index].first << " and " << possibilities[index].second << endl;
+	}
+	return index[0];
+}
+
+int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif) {
+//	cout << " ###############################################" << endl;
+	int64_t tmpBestCost = (*bestCost);
+	vector<int> index;
+	index.push_back(-1);
+
+	for (int i = 0; i < possibilities.size(); i++) {
+		int64_t tmpCost = currentCost;
+
+	//	tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+
+	//	tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		tmpCost = calculate_cost(D,F,sol);
+
+		
+
+		if(tmpCost > tmpBestCost && tmpCost < xcost) {
+		//	cout << "tmpBestCost = " << tmpBestCost << " tmpCost = " << tmpCost << " xcost = " << xcost << endl;
+		//	cout << "-------- modif" << endl;
+			index.clear();
+			index.push_back(i);
+			tmpBestCost = tmpCost;
+			*modif = true;
+		}
+		else if (tmpCost == tmpBestCost && tmpCost > xcost) {
+		//	cout << "---------- equalty" << endl;
+			if (index[i] == -1) index.clear();
+			index.push_back(i);
+		}
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+	}
+
+	if (index[0] != -1) {
+		(*bestCost) = tmpBestCost;
+		//cout << "#### next swap will be on " << possibilities[index].first << " and " << possibilities[index].second << endl;
+	}
+	return index[0];
 }
 
 int indexOfMaxValue(vector<int> v) {
@@ -82,7 +164,7 @@ int indexOfMaxValue2(vector<int> v) {
 			index.push_back(i);
 		}
 	}
-	cout << "------------------------ size = " << index.size() << endl;
+	//cout << "------------------------ size = " << index.size() << endl;
 	cout << "------------------------ best ME value is " << maxval << endl;
 	if (index.size() == 1) return index[0];
 	else {
@@ -91,6 +173,8 @@ int indexOfMaxValue2(vector<int> v) {
 		return index[t];
 	}
 }
+
+
 
 int64_t updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
 	int64_t sum = 0;

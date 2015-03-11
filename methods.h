@@ -15,6 +15,11 @@ bool isIntoVect(vector<int> v, int val);
 
 int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t comparative_cost);
 
+//returns index
+int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif);
+
+int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost, bool * modif);
+
 int indexOfMaxValue(vector<int> v);
 
 int indexOfMaxValue2(vector<int> v);

@@ -1,5 +1,11 @@
 #include "ls.h"
 
+////////////////////////////////////////////
+//////// CLASSIC CLIMBERS /////////////////
+///////////////////////////////////////////
+
+int MAX_ITER = 10000;
+
 // local search with first
 int64_t ls_first(int ** D, int ** F, vector<int> * sol) {
 	int64_t cost = calculate_cost(D,F,(*sol));
@@ -15,6 +21,8 @@ int64_t ls_first(int ** D, int ** F, vector<int> * sol) {
 			if (i != j)	possibilities.push_back(make_pair(i,j));
 		}
 	}
+
+	cout << "possibilities SIZE = " << possibilities.size() << endl;
 
 	int size_for_swap = possibilities.size();
 	int cmp = 0;
@@ -49,6 +57,7 @@ int64_t ls_first(int ** D, int ** F, vector<int> * sol) {
 	return cost;
 }
 
+// local search with best
 int64_t climber_best(int** D, int ** F, vector<int> * sol) {
 	int64_t cost = calculate_cost(D,F,(*sol));
 
@@ -64,39 +73,61 @@ int64_t climber_best(int** D, int ** F, vector<int> * sol) {
 		}
 	}
 
+	vector<int> best_its;
+
 	while(true) {
+		cout << "iteration " << cmp << " cost is = " << cost << " (climber_best)"<< endl;
 		int best_it = -1;
+		best_its.clear();
+		best_its.push_back(-1);
+
 		int bestcost = cost;
 		int64_t tmpcost;
-	//	cout << cost << endl;
+
 		for (int i = 0; i < possibilities.size(); i++) {
 			tmpcost = cost;
-			tmpcost -= updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
-			tmpcost += updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
+			tmpcost = calculate_cost(D,F,(*sol));
+
 			if (tmpcost < bestcost) {
+
 				bestcost = tmpcost;
-				best_it = i;
+				best_its.clear();
+				best_its.push_back(i);
 			}
+			else if (tmpcost == bestcost && tmpcost < cost ) {
+
+				best_its.push_back(i);
+			}
+
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
 		}
-		if (best_it == -1) break;
+
+		if (best_its[0] == -1) break;
+		if(best_its.size() > 1) {
+			int it = rand() % best_its.size();
+			best_it = best_its[it];
+		}
+		else best_it = best_its[0];
+
 		iter_swap((*sol).begin() + possibilities[best_it].first, (*sol).begin() + possibilities[best_it].second);
 		cost = bestcost;
 		cmp++;
-		// used when cycles...
-	//	if (cmp > 1500) break;
 	}
 	cout << "-------- number of iterations (climber_best) = " << cmp << endl;
 
 	return cost;
 }
 
+
+// local search with worst
 int64_t climber_worst(int** D, int ** F, vector<int> * sol) {
 	int64_t cost = calculate_cost(D,F,(*sol));
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
+
+	vector<int> best_its;
 
 	vector<pair<int,int>> possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
@@ -111,25 +142,37 @@ int64_t climber_worst(int** D, int ** F, vector<int> * sol) {
 		int best_it = -1;
 		int wcost = -1;
 		int64_t tmpcost;
-		//cout << cmp << " : cost = " << cost << endl;
+
+		best_its.clear();
+		best_its.push_back(-1);
+		cout << "iteration " << cmp << " cost is = " << cost << " (climber_worst)"<< endl;
 		for (int i = 0; i < possibilities.size(); i++) {
 			tmpcost = cost;
-			tmpcost -= updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
-			tmpcost += updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
+			tmpcost = calculate_cost(D,F,(*sol));
 			if (tmpcost > wcost && tmpcost < cost) {
-			//	cout << "-------- wcost = " << wcost << " tmpcost = " << tmpcost << " cost = " << cost << endl;
 				wcost = tmpcost;
-				best_it = i;
+				best_its.clear();
+				best_its.push_back(i);
 			}
+			else if (tmpcost == wcost) {
+				best_its.push_back(i);
+			}
+
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
 		}
-		if (best_it == -1) break;
+
+		if (best_its[0] == -1) break;
+
+		if(best_its.size() > 1) {
+			int it = rand() % best_its.size();
+			best_it = best_its[it];
+		}
+		else best_it = best_its[0];
+
 		iter_swap((*sol).begin() + possibilities[best_it].first, (*sol).begin() + possibilities[best_it].second);
 		cost = wcost;
 		cmp++;
-		// used when cycles...
-	//	if (cmp > 1500) break;
 	}
 	cout << "-------- number of iterations (climber_worst) = " << cmp << endl;
 
@@ -156,30 +199,205 @@ int64_t ls_ME_climber(int** D, int ** F, vector<int> * sol) {
 	}
 
 	while(true) {
-		cout << "iteration " << cmp << " cost is = " << cost  << " (ME climber)"<< endl;
+		cout << "iteration " << cmp << " cost is = " << cost << " (ME climber)"<< endl;
 		for (int i = 0; i < possibilities.size(); i++) {
 			int64_t tmpcost = cost;
-			tmpcost -= updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second ); 
+
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
-			tmpcost += updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
+			tmpcost = calculate_cost(D,F,(*sol));
 
 			if (tmpcost < cost) better[i] = betterSols(D, F, (*sol),possibilities, tmpcost);
 			else better[i] = 0;
+
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
 		}
 		int index = indexOfMaxValue2(better);
 		tmp_pair = make_pair(possibilities[index].first, possibilities[index].second);
 		// end of LS
 		if (index == -1) break;
-		cost -= updateCost(D, F, (*sol), possibilities[index].first, possibilities[index].second);
+
 		iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
-		cost += updateCost(D, F, (*sol), possibilities[index].first, possibilities[index].second);
+		cost = calculate_cost(D,F,(*sol));
 		cmp++;
-		// used when cycles...
-		//if (cmp > 1500) break;
 	}
 	cout << "-------- number of iterations = " << cmp << endl;
 
+	return cost;
+}
+
+int64_t large_best_climber(int** D, int ** F, vector<int> * sol) {
+		int64_t cost = calculate_cost(D,F,(*sol));
+
+	bool modif;
+
+	int cmp = 0;
+	pair<int,int> tmp_pair = make_pair(0,0);
+
+	vector<pair<int,int>> possibilities;
+	for (int i = 0; i < (*sol).size() - 1; i++) {
+		for (int j = i + 1; j < (*sol).size(); j++) {
+			if (i != j) {
+				possibilities.push_back(make_pair(i,j));
+			}
+		}
+	}
+
+	vector<int> best_its;
+
+	while(true) {
+		cout << "iteration " << cmp << " cost is = " << cost << " (large_best_no_deter)"<< endl;
+		int best_it = -1;
+		int64_t bestcost = cost;
+		int64_t tmpcost;
+		int64_t newCost = cost;
+		best_its.clear();
+		best_its.push_back(-1);
+		for (int i = 0; i < possibilities.size(); i++) {
+
+			// init into loop
+			if (tmp_pair != possibilities[i]) {
+				tmpcost = cost;
+				
+				// check neigh
+				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
+				tmpcost = calculate_cost(D,F,(*sol));
+
+				// only with better neigh
+				if(tmpcost < cost) {
+					if (tmpcost == bestcost) {
+						best_its.push_back(i);
+						newCost = tmpcost;
+					}
+
+					if (tmpcost < bestcost) {
+						best_its.clear();
+						bestcost = tmpcost;
+						newCost = tmpcost;
+						best_its.push_back(i);
+					}
+
+					modif = false;
+					int indCheck = checkBetter(D, F, (*sol), possibilities, &bestcost, tmpcost, cost, &modif);
+
+					if(indCheck != -1) {
+						if (modif) best_its.clear();
+						best_its.push_back(i);
+						newCost = tmpcost;
+					}
+				}
+				//restore
+				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
+			}			
+		}
+
+		cout << "size = " << best_its.size() << endl;
+
+		for (int i = 0; i < best_its.size() ; i++) {
+			int randInd = rand() % best_its.size();
+			best_its[0] = best_its[randInd];
+		}
+
+		tmp_pair = make_pair(possibilities[best_its[0]].first, possibilities[best_its[0]].second);
+		//apply best move
+		if (best_its[0] == -1) {
+			break;
+		}
+
+		iter_swap((*sol).begin() + possibilities[best_its[0]].first, (*sol).begin() + possibilities[best_its[0]].second);
+		cost = calculate_cost(D,F,(*sol)) ;
+		cmp++;
+		// used when cycles...
+		//if (cmp > MAX_ITER) break;
+	}
+	cout << "-------- number of iterations (large_best) = " << cmp << endl;
+
+	return cost;
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+///////////////// LARGE /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+int64_t large_first(int ** D, int ** F, vector<int> * sol) {
+	int64_t cost = calculate_cost(D,F,(*sol));
+	int64_t tmpcost;
+	bool ok = false;
+	cout << "INIT Cost = " << cost  << endl;
+	vector<pair<pair<int,int>,pair<int,int>>> poss;
+	for (int i = 0; i < (*sol).size(); i++) {
+		for( int j = i + 1; j <  (*sol).size(); j++) {
+			if (i != j) {
+				for(int k = 0; k < (*sol).size() ; k++ ) {
+					for (int l = k+1; l < (*sol).size(); l++) {
+						if(k != l) {
+							poss.push_back(make_pair(make_pair(i,j), make_pair(k,l)));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	int size_for_swap = poss.size();
+	int cmp = 0;
+	while(true) {
+		int index;
+		ok = false;
+		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
+		while(!ok) {
+			tmpcost = cost;
+			index = rand() % size_for_swap;
+
+/////////////////
+			pair<int,int> s1 = poss[index].first;
+			pair<int,int> s2 = poss[index].second;
+
+			iter_swap((*sol).begin() + s1.first, (*sol).begin() + s1.second);
+			tmpcost = calculate_cost(D,F,(*sol));
+
+			if(s1.first == s2.first && s1.second == s2.second) {
+				if(tmpcost < cost) {
+					cost = tmpcost;
+					ok = true;
+				}
+				else {
+					iter_swap((*sol).begin() + s1.first, (*sol).begin() + s1.second);
+					poss.erase(poss.begin()+index);
+					poss.push_back(make_pair(s1,s2));
+					size_for_swap--;
+				}
+
+			}
+			else {
+				int tmpcost2 ;
+				iter_swap((*sol).begin() + s2.first, (*sol).begin() + s2.second);
+				tmpcost2 = calculate_cost(D,F,(*sol));
+
+				if (tmpcost2 < cost) {
+					ok = true;
+					iter_swap((*sol).begin() + s2.first, (*sol).begin() + s2.second);
+					cost = tmpcost;
+				}
+				else {
+					iter_swap((*sol).begin() + s2.first, (*sol).begin() + s2.second);
+					iter_swap((*sol).begin() + s1.first, (*sol).begin() + s1.second);
+					poss.erase(poss.begin()+index);
+					poss.push_back(make_pair(s1,s2));
+					size_for_swap--;
+				}
+
+			}
+			if(size_for_swap == 0) break;
+		}
+
+		if(size_for_swap == 0) break;
+		size_for_swap = poss.size();
+		cmp++;
+	}
+
+	cout << "-------- number of iterations (ls_first) = " << cmp << endl;
 	return cost;
 }
 
@@ -214,17 +432,17 @@ int64_t ls_ME_large(int** D, int ** F, vector<int> * sol) {
 		}
 		int index = indexOfMaxValue2(better);
 		tmp_pair = make_pair(possibilities[index].first, possibilities[index].second);
-		// end of LS
+
+		// end of LS : choose the best neigh
 		if (index == -1) {
-			cout << "----------------- END" << endl;
 			int best_it = -1;
 			int bestcost = cost;
 			int64_t tmpcost;
 			for (int i = 0; i < possibilities.size(); i++) {
 				tmpcost = cost;
-				tmpcost -= updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
 				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
-				tmpcost += updateCost(D,F,(*sol), possibilities[i].first,possibilities[i].second );
+				tmpcost = calculate_cost(D,F,(*sol));
+
 				if (tmpcost < bestcost) {
 					bestcost = tmpcost;
 					best_it = i;
@@ -235,61 +453,183 @@ int64_t ls_ME_large(int** D, int ** F, vector<int> * sol) {
 			cost = bestcost;
 			break;
 		}
-		cost -= updateCost(D, F, (*sol), possibilities[index].first, possibilities[index].second);
+
 		iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
-		cost += updateCost(D, F, (*sol), possibilities[index].first, possibilities[index].second);
+		cost = calculate_cost(D,F,(*sol));
 		cmp++;
 		// used when cycles...
-		if (cmp > 1500) break;
+		if (cmp > MAX_ITER) break;
 	}
 	cout << "-------- number of iterations = " << cmp << endl;
 
 	return cost;
 }
 
-/*
-//local search with max expand, without random 
-int64_t ls_ME(int** D, int ** F, vector<int> * sol) {
+int64_t large_best(int** D, int ** F, vector<int> * sol) {
 	int64_t cost = calculate_cost(D,F,(*sol));
+
+	bool modif;
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
 
 	vector<pair<int,int>> possibilities;
-	vector<int> better;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j) {
 				possibilities.push_back(make_pair(i,j));
-				better.push_back(0);
 			}
 		}
 	}
 
+	vector<int> best_its;
+
 	while(true) {
-		cout << cmp << endl;
-		cout << "cost is = " << cost << endl;
+		cout << "iteration " << cmp << " cost is = " << cost << " (large_best)"<< endl;
+		int best_it = -1;
+		int64_t bestcost = cost;
+		int64_t tmpcost;
+		int64_t newCost = cost;
+		best_its.clear();
+		best_its.push_back(-1);
 		for (int i = 0; i < possibilities.size(); i++) {
+
+			// init into loop
 			if (tmp_pair != possibilities[i]) {
+				tmpcost = cost;
+				
+				// check neigh
 				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
-				better[i] = betterSols(D, F, (*sol),possibilities, cost);
+				tmpcost = calculate_cost(D,F,(*sol));
+
+				if (tmpcost == bestcost && tmpcost < cost) {
+					best_its.push_back(i);
+					newCost = tmpcost;
+				}
+
+				if (tmpcost < bestcost) {
+					best_its.clear();
+					bestcost = tmpcost;
+					newCost = tmpcost;
+					best_its.push_back(i);
+				}
+
+				modif = false;
+				int indCheck = checkBetter(D, F, (*sol), possibilities, &bestcost, tmpcost, cost, &modif);
+
+
+				if(indCheck != -1) {
+					if (modif) best_its.clear();
+					best_its.push_back(i);
+					newCost = tmpcost;
+				}
+				//restore
 				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
-			}
-			else {
-				better[i] = 0;
-			}
+			}			
 		}
-		int index = indexOfMaxValue(better);
-		tmp_pair = make_pair(possibilities[index].first, possibilities[index].second);
-		if (index == -1) break;
-		cost -= updateCost(D, F, (*sol), possibilities[index].first, possibilities[index].second);
-		iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
-		cost += updateCost(D, F, (*sol), possibilities[index].first, possibilities[index].second);
+
+		cout << "size = " << best_its.size() << endl;
+
+		for (int i = 0; i < best_its.size() ; i++) {
+			int randInd = rand() % best_its.size();
+			best_its[0] = best_its[randInd];
+		}
+
+		tmp_pair = make_pair(possibilities[best_its[0]].first, possibilities[best_its[0]].second);
+		//apply best move
+		if (best_its[0] == -1) {
+			break;
+		}
+
+		iter_swap((*sol).begin() + possibilities[best_its[0]].first, (*sol).begin() + possibilities[best_its[0]].second);
+		cost = calculate_cost(D,F,(*sol)) ;
 		cmp++;
+		// used when cycles...
+		if (cmp > MAX_ITER) break;
 	}
-	cout << "-------- number of iterations = " << cmp << endl;
+	cout << "-------- number of iterations (large_best) = " << cmp << endl;
 
 	return cost;
 }
 
-*/
+
+int64_t large_worst(int** D, int ** F, vector<int> * sol) {
+	int64_t cost = calculate_cost(D,F,(*sol));
+
+	bool modif;
+
+	int cmp = 0;
+	pair<int,int> tmp_pair = make_pair(0,0);
+
+	vector<pair<int,int>> possibilities;
+	for (int i = 0; i < (*sol).size() - 1; i++) {
+		for (int j = i + 1; j < (*sol).size(); j++) {
+			if (i != j) {
+				possibilities.push_back(make_pair(i,j));
+			}
+		}
+	}
+
+	vector<int> best_its;
+
+	while(true) {
+		cout << "iteration " << cmp << " cost is = " << cost << " (large_worst)"<< endl;
+		if (cost != calculate_cost(D,F,(*sol)) ) break;
+		int best_it = -1;
+		int64_t bestcost = -1;
+		int64_t tmpcost;
+		best_its.clear();
+		best_its.push_back(-1);
+
+		for (int i = 0; i < possibilities.size(); i++) {
+
+			// init into loop
+			if (tmp_pair != possibilities[i]) {
+				tmpcost = cost;
+				
+				// check neigh
+				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
+				tmpcost = calculate_cost(D,F,(*sol));
+
+				if (tmpcost == bestcost && tmpcost < cost) {
+					best_its.push_back(i);
+				}
+				else if (tmpcost > bestcost && tmpcost < cost) {
+					best_its.clear();
+					bestcost = tmpcost;
+					best_its.push_back(i);
+				}
+
+				modif = false;
+				int indCheck = checkWorst(D, F, (*sol), possibilities, &bestcost, tmpcost, cost, &modif);
+
+				if(indCheck != -1) {
+					if (modif)  best_its.clear();
+					best_its.push_back(i);
+				}
+				//restore
+				iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
+			}			
+		}
+
+		for (int i = 0; i < best_its.size() ; i++) {
+			int randInd = rand() % best_its.size();
+			best_its[0] = best_its[randInd];
+		}
+
+		tmp_pair = make_pair(possibilities[best_its[0]].first, possibilities[best_its[0]].second);
+		//apply best move
+		if (best_its[0] == -1) {
+			break;
+		}
+
+		iter_swap((*sol).begin() + possibilities[best_its[0]].first, (*sol).begin() + possibilities[best_its[0]].second);
+		cost = calculate_cost(D,F,(*sol));
+		cmp++;
+		// used when cycles...
+		if (cmp > MAX_ITER) break;
+	}
+	cout << "-------- number of iterations (large_worst) = " << cmp << endl;
+
+	return cost;
+}
