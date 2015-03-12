@@ -78,7 +78,7 @@ int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possib
 			tmpBestCost = tmpCost;
 			(*modif) = true;
 		}
-		else if (tmpCost == tmpBestCost && tmpCost > xcost) {
+		else if (tmpCost == tmpBestCost && tmpCost < xcost) {
 			if (index[i] == -1) index.clear();
 			index.push_back(i);
 		}
@@ -86,12 +86,56 @@ int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possib
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 	}
 
-	if (index[0] != -1) {
+	if (*modif) {
 		(*bestCost) = tmpBestCost;
 		//cout << "#### next swap will be on " << possibilities[index].first << " and " << possibilities[index].second << endl;
 	}
 	return index[0];
 }
+
+int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost, bool * modif) {
+	int64_t tmpBestCost = (*bestCost);
+	vector<int> index;
+	index.push_back(-1);
+
+	for (int i = 0; i < possibilities.size(); i++) {
+		int64_t tmpCost = currentCost;
+
+	//	tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+
+	//	tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+
+		tmpCost = calculate_cost(D,F,sol);
+
+		if(tmpCost < tmpBestCost) {
+			index.clear();
+			index.push_back(i);
+			tmpBestCost = tmpCost;
+			(*modif) = true;
+		}
+		else if (tmpCost == tmpBestCost && tmpCost < xcost) {
+			if (index[i] == -1) index.clear();
+			index.push_back(i);
+		}
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+	}
+
+	if (*modif) {
+		(*bestCost) = tmpBestCost;
+		//cout << "#### next swap will be on " << possibilities[index].first << " and " << possibilities[index].second << endl;
+	}
+	if (index.size() > 1) {
+		//cout << "-------------- chkbet2 size = " << index.size() << endl;
+		int t = rand() % index.size();
+		return index[t];
+	}
+	return index[0];
+}
+
+
 
 int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif) {
 //	cout << " ###############################################" << endl;
@@ -120,7 +164,7 @@ int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibi
 			tmpBestCost = tmpCost;
 			*modif = true;
 		}
-		else if (tmpCost == tmpBestCost && tmpCost > xcost) {
+		else if (tmpCost == tmpBestCost && tmpCost < xcost) {
 		//	cout << "---------- equalty" << endl;
 			if (index[i] == -1) index.clear();
 			index.push_back(i);
@@ -136,18 +180,47 @@ int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibi
 	return index[0];
 }
 
-int indexOfMaxValue(vector<int> v) {
-	int maxval = 0;
-	int index = -1;
-	for (int i = 0; i < v.size(); i++) {
-		if (v[i] > maxval) {
-			index = i;
-			maxval = v[i];
+int checkWorst2(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif) {
+//	cout << " ###############################################" << endl;
+	int64_t tmpBestCost = (*bestCost);
+	vector<int> index;
+	index.push_back(-1);
+
+	for (int i = 0; i < possibilities.size(); i++) {
+		int64_t tmpCost = currentCost;
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
+
+		tmpCost = calculate_cost(D,F,sol);		
+
+		if(tmpCost > tmpBestCost && tmpCost < xcost) {
+			index.clear();
+			index.push_back(i);
+			tmpBestCost = tmpCost;
+			*modif = true;
 		}
+		else if (tmpCost == tmpBestCost && tmpCost < xcost) {
+		//	cout << "---------- equalty" << endl;
+			if (index[i] == -1) index.clear();
+			index.push_back(i);
+		}
+
+		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 	}
-	cout << "------------------------ best ME value is " << maxval << endl;
-	return index;
+
+	if (index[0] != -1) {
+		(*bestCost) = tmpBestCost;
+	}
+
+	if (index.size() > 1) {
+		//cout << "-------------- chkbet2 size = " << index.size() << endl;
+		int t = rand() % index.size();
+		return index[t];
+	}	
+
+	return index[0];
 }
+
 
 // uses rand if equalties 
 int indexOfMaxValue2(vector<int> v) {
@@ -164,12 +237,10 @@ int indexOfMaxValue2(vector<int> v) {
 			index.push_back(i);
 		}
 	}
-	//cout << "------------------------ size = " << index.size() << endl;
 	cout << "------------------------ best ME value is " << maxval << endl;
 	if (index.size() == 1) return index[0];
 	else {
 		int t = rand() % index.size();
-		//cout << "choses t= " << t << endl;
 		return index[t];
 	}
 }

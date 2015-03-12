@@ -18,7 +18,11 @@ int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibi
 //returns index
 int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif);
 
+int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost, bool * modif);
+
 int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost, bool * modif);
+
+int checkWorst2(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif);
 
 int indexOfMaxValue(vector<int> v);
 
