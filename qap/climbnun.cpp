@@ -1,5 +1,7 @@
 #include "climbnun.h"
 
+extern vector<int64_t> iter;
+
 int64_t nun_first(int ** D, int ** F, vector<int> * sol) {
 	
 	int64_t cost = calculate_cost(D,F,(*sol));
@@ -24,6 +26,7 @@ int64_t nun_first(int ** D, int ** F, vector<int> * sol) {
 	int cmp = 0;
 
 	while(true) {
+		iter.push_back(cost);
 		int index;
 		ok = false;
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
@@ -108,6 +111,7 @@ int64_t nun_best(int** D, int ** F, vector<int> * sol) {
 	vector<int> best_its;
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_best_no_deter)"<< endl;
 		int best_it = -1;
 		int64_t bestcost = cost;
@@ -194,6 +198,7 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 		}
 	}
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (ME climber)"<< endl;
 		for (int i = 0; i < possibilities.size(); i++) {
 			int64_t tmpcost = cost;
@@ -218,6 +223,27 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 		cost = calculate_cost(D,F,(*sol));
 		cmp++;
 	}
+	/////
+
+
+	int best_it = -1;
+	int bestcost = cost;
+	int64_t tmpcost;
+	for (int i = 0; i < possibilities.size(); i++) {
+		tmpcost = cost;
+		iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
+		tmpcost = calculate_cost(D,F,(*sol));
+
+		if (tmpcost < bestcost) {
+			bestcost = tmpcost;
+			best_it = i;
+		}
+		iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
+	}
+	if (best_it != -1) iter_swap((*sol).begin() + possibilities[best_it].first, (*sol).begin() + possibilities[best_it].second);
+	cost = bestcost;
+	iter.push_back(cost);
+
 	cout << "-------- number of iterations = " << cmp << endl;
 
 	return cost;

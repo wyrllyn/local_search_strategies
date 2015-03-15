@@ -2,6 +2,8 @@
 
 //int MAX_ITER = 10000;
 
+extern vector<int64_t> iter;
+
 
 int64_t large_first(int ** D, int ** F, vector<int> * sol) {
 
@@ -27,6 +29,7 @@ int64_t large_first(int ** D, int ** F, vector<int> * sol) {
 	int cmp = 0;
 
 	while(true) {
+		iter.push_back(cost);
 		int index;
 		ok = false;
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
@@ -105,6 +108,7 @@ int64_t large_best(int** D, int ** F, vector<int> * sol) {
 	vector<pair<int,int>> best_its;
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_best)"<< endl;
 		int best_it = -1;
 		int64_t bestcost = cost;
@@ -199,6 +203,7 @@ int64_t large_worst(int** D, int ** F, vector<int> * sol) {
 	vector<pair<int,int>> w_its;
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_worst)"<< endl;
 		if (cost != calculate_cost(D,F,(*sol)) ) break;
 		int best_it = -1;

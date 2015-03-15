@@ -1,5 +1,7 @@
 #include "climbn.h"
 
+extern vector<int64_t> iter;
+
 //OK
 int64_t first(int ** D, int ** F, vector<int> * sol) {
 	int64_t cost = calculate_cost(D,F,(*sol));
@@ -23,6 +25,7 @@ int64_t first(int ** D, int ** F, vector<int> * sol) {
 	while(true) {
 		int index;
 		ok = false;
+		iter.push_back(cost);
 		while(!ok) {
 			index = rand() % size_for_swap;
 			iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
@@ -70,6 +73,7 @@ int64_t best(int** D, int ** F, vector<int> * sol) {
 	vector<int> best_its;
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (climber_best)"<< endl;
 		int best_it = -1;
 		best_its.clear();
@@ -108,6 +112,7 @@ int64_t best(int** D, int ** F, vector<int> * sol) {
 	}
 	cout << "-------- number of iterations (climber_best) = " << cmp << endl;
 
+	
 	return cost;
 }
 
@@ -131,6 +136,7 @@ int64_t worst(int** D, int ** F, vector<int> * sol) {
 	}
 
 	while(true) {
+		iter.push_back(cost);
 		int best_it = -1;
 		int64_t wcost = -1;
 		int64_t tmpcost;
@@ -169,6 +175,64 @@ int64_t worst(int** D, int ** F, vector<int> * sol) {
 	}
 
 	cout << "-------- number of iterations (climber_worst) = " << cmp << endl;
+	return cost;
+}
+
+int64_t clone_first(int ** D, int ** F, vector<int> * sol) {
+	int64_t cost = calculate_cost(D,F,(*sol));
+	int64_t tmpcost;
+	bool ok = false;
+	cout << "INIT Cost = " << cost  << endl;
+
+	//vector pair for each swap possibilities + size of reachable 
+	// size for swap = size of the vector
+	vector<pair<int,int>> possibilities;
+	for (int i = 0; i < (*sol).size() - 1; i++) {
+		for (int j = i + 1; j < (*sol).size(); j++) {
+			if (i != j)	possibilities.push_back(make_pair(i,j));
+		}
+	}
+
+	cout << "possibilities SIZE = " << possibilities.size() << endl;
+
+	int size_for_swap = possibilities.size();
+	int cmp = 0;
+	while(true) {
+		int index;
+		ok = false;
+		while(!ok) {
+			int64_t tmpcost2 = cost;
+			index = rand() % size_for_swap;
+
+			tmpcost2 -= updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);
+
+			iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
+
+			tmpcost2 += updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);
+
+			tmpcost = calculate_cost(D,F,(*sol));
+
+			if (tmpcost2 != tmpcost) cout << "problem with swaps : " << possibilities[index].first << " and " << possibilities[index].second << endl;
+			if(tmpcost < cost) {
+				cost = tmpcost;
+				ok = true;
+			}
+			else {
+				iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
+				pair<int,int> tmp_pair = make_pair(possibilities[index].first, possibilities[index].second);
+				possibilities.erase(possibilities.begin()+index);
+				possibilities.push_back(tmp_pair);
+				size_for_swap--;
+			}			
+			if(size_for_swap == 0) break;
+		}
+
+		if(size_for_swap == 0) break;
+		size_for_swap = possibilities.size();
+		cmp++;
+	}
+
+	cout << "-------- number of iterations (ls_first) = " << cmp << endl;
 	return cost;
 }
 

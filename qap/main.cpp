@@ -5,10 +5,16 @@
 #include "parser.h"
 #include <limits>
 
+vector<int64_t> iter;
+vector<int64_t> me;
+vector<int64_t> vrank;
+
 int main(int argc, char** argv) {
-	int s = 1000;
-	int method = 12;
+	int s = 10;
+	int method = 6;
 	string filename = "qapdata/nug30.dat";
+	vector<string> fl;
+	fl = tokenize(filename, "/");
 
 	int ** D;
 	int ** F;
@@ -26,6 +32,16 @@ int main(int argc, char** argv) {
 	parse_qap(&D, &F, &n, filename);
 	init_sol(&sol, n);
 	cout << "INIT COST = " << calculate_cost(D,F,sol) << endl;
+
+	string res;
+	string res_me;
+	string res_rank;
+
+	res = fl[1] + "-m" + to_string(method) + "-s" + to_string(s) + "-iter" + ".txt";
+	res_me = fl[1] + "-m" + to_string(method) + "-s" + to_string(s) + "-me" + ".txt";
+	res_rank = fl[1] + "-m" + to_string(method) + "-s" + to_string(s) + "-rank" + ".txt";
+
+	cout << res << endl;
 
 	switch(method) {
 		case 1:
@@ -67,13 +83,18 @@ int main(int argc, char** argv) {
 		case 13:
 			cost = ls_ME(D,F, &sol);
 			break;
+		case 15:
+			cost = clone_first(D,F, &sol);
+			break;
 	}
 
 	
 
 	cout << "FINAL Cost = " << cost  << " = " << calculate_cost(D,F,sol) <<   endl;
 
-	//write_res("costs.txt", c1, c2 );
+	write_res(res, iter);
+	if (me.size() > 0) write_res(res_me, me);
+	if (vrank.size() > 0) write_res(res_rank, vrank);
 
 	for (int i = 0; i < n; i++) {
 		free(F[i]);

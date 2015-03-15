@@ -2,6 +2,8 @@
 
 int MAX_ITER = 10000;
 
+extern vector<int64_t> iter;
+
 int64_t ls_first(int ** D, int ** F, vector<int> * sol) {
 
 	int64_t cost = calculate_cost(D,F,(*sol));
@@ -27,6 +29,7 @@ int64_t ls_first(int ** D, int ** F, vector<int> * sol) {
 	int cmp = 0;
 
 	while(true) {
+		iter.push_back(cost);
 		int index;
 		ok = false;
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
@@ -109,6 +112,7 @@ int64_t ls_ME(int** D, int ** F, vector<int> * sol) {
 	}
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (ME large)"<< endl;
 		if (cost < ref_cost) ref_cost = cost;
 		cout << "---- ref_cost = " << ref_cost << endl;
@@ -143,6 +147,7 @@ int64_t ls_ME(int** D, int ** F, vector<int> * sol) {
 			}
 			if (best_it != -1) iter_swap((*sol).begin() + possibilities[best_it].first, (*sol).begin() + possibilities[best_it].second);
 			cost = bestcost;
+			iter.push_back(cost);
 			break;
 		}
 
@@ -176,6 +181,7 @@ int64_t ls_best(int** D, int ** F, vector<int> * sol) {
 	vector<int> best_its;
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_best)"<< endl;
 		if (cost < ref_cost) ref_cost = cost;
 
@@ -265,6 +271,7 @@ int64_t ls_worst(int** D, int ** F, vector<int> * sol) {
 	vector<int> best_its;
 
 	while(true) {
+		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (large_worst)"<< endl;
 		if (cost < ref_cost) ref_cost = cost;
 		int best_it = -1;
