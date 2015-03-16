@@ -95,3 +95,16 @@ void write_res(string fileName, vector<int64_t> iter) {
         ofs.close();
     }
 }
+
+void write_res2(string fileName, vector<pair<int,int>> iter) {
+
+    ofstream ofs;
+    
+    ofs.open(fileName, ios::out | ios::app);
+
+    if(ofs) {  
+        for (int i = 0; i < iter.size(); i++)
+          ofs << i << " " << iter[i].first<< " " << iter[i].second << endl;
+        ofs.close();
+    }
+}

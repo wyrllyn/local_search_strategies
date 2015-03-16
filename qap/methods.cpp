@@ -1,7 +1,7 @@
 #include "methods.h"
 
 extern vector<int64_t> me;
-extern vector<int64_t> vrank;
+extern vector<pair<int,int>> vrank;
 
 void init_sol(vector<int> *sol, int n) {
 	int val = rand() % n;
@@ -23,6 +23,14 @@ int64_t calculate_cost(int ** D, int ** F, vector<int> sol ) {
 	return cost;
 }
 
+
+int ran(vector<int64_t> v, int64_t c) {
+	int nb = 0;
+	for (int i = 0; i < v.size(); i++) {
+		if (v[i] < c) nb++;
+	}
+	return nb + 1;
+}
 
 bool isIntoVect(vector<int> v, int val) {
 	for (int i = 0; i < v.size(); i++) {

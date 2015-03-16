@@ -15,6 +15,8 @@ bool isIntoVect(vector<int> v, int val);
 
 int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t comparative_cost);
 
+int ran(vector<int64_t> v, int64_t c) ;
+
 //returns index
 int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int>> possibilities, int64_t * bestCost, int64_t currentCost, int64_t xcost,  bool * modif);
 

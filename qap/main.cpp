@@ -7,7 +7,7 @@
 
 vector<int64_t> iter;
 vector<int64_t> me;
-vector<int64_t> vrank;
+vector<pair<int,int>> vrank;
 
 int main(int argc, char** argv) {
 	int s = 10;
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 
 	write_res(res, iter);
 	if (me.size() > 0) write_res(res_me, me);
-	if (vrank.size() > 0) write_res(res_rank, vrank);
+	if (vrank.size() > 0) write_res2(res_rank, vrank);
 
 	for (int i = 0; i < n; i++) {
 		free(F[i]);

@@ -1,6 +1,7 @@
 #include "climbnun.h"
 
 extern vector<int64_t> iter;
+extern vector<pair<int,int>> vrank;
 
 int64_t nun_first(int ** D, int ** F, vector<int> * sol) {
 	
@@ -184,6 +185,8 @@ int64_t nun_best(int** D, int ** F, vector<int> * sol) {
 int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 	int64_t cost = calculate_cost(D,F,(*sol));
 
+	vector<int64_t> tmprank;
+
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
 
@@ -198,6 +201,7 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 		}
 	}
 	while(true) {
+		if (tmprank.size() > 0) tmprank.clear();
 		iter.push_back(cost);
 		cout << "iteration " << cmp << " cost is = " << cost << " (ME climber)"<< endl;
 		for (int i = 0; i < possibilities.size(); i++) {
@@ -208,7 +212,7 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 
 			if (tmpcost < cost) {
 				better[i] = betterSols(D, F, (*sol),possibilities, tmpcost);
-				// add rank
+				tmprank.push_back(tmpcost);
 			}
 			else better[i] = 0;
 
@@ -221,6 +225,9 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 
 		iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
 		cost = calculate_cost(D,F,(*sol));
+		pair<int,int> rn = make_pair(ran(tmprank, cost), tmprank.size());
+		//cout << "-----" << rn.first << " " << rn.second << endl;
+		vrank.push_back(rn);
 		cmp++;
 	}
 	/////
