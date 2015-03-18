@@ -13,9 +13,9 @@ void parse_qap(int*** D, int*** F, int * size, string filename);
 
 vector<string> tokenize(string toSplit, string token);
 
-void write_res(string fileName, vector<int64_t> iter);
+void write_res(string fileName, vector<float> iter);
 
-void write_res2(string fileName, vector<pair<int,int>> iter) ;
+void write_res2(string fileName, vector<pair<int,int> > iter) ;
 
 
 #endif

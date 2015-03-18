@@ -82,29 +82,34 @@ vector<string> tokenize(string toSplit, string token) {
     return result;
 }
 
-void write_res(string fileName, vector<int64_t> iter) {
+void write_res(string fileName, vector<float> iter) {
 
    // cout << "test" << endl;
-    ofstream ofs;
+  //  ofstream ofs;
     
-    ofs.open(fileName, ios::out | ios::app);
+ //   ofs.open(fileName, ios::out /*| ios::app*/);
+
+    ofstream ofs(fileName.c_str(), ios::app); 
 
     if(ofs) {  
         for (int i = 0; i < iter.size(); i++)
-          ofs << i << " " << iter[i]<< " " << endl;
+          ofs << i << " " << (long)iter[i]<< " " << endl;
+        ofs << endl;
         ofs.close();
     }
 }
 
-void write_res2(string fileName, vector<pair<int,int>> iter) {
+void write_res2(string fileName, vector<pair<int,int> > iter) {
 
-    ofstream ofs;
+   // ofstream ofs;
+    ofstream ofs(fileName.c_str(), ios::app); 
     
-    ofs.open(fileName, ios::out | ios::app);
+  //  ofs.open(fileName, ios::out /*| ios::app*/);
 
     if(ofs) {  
         for (int i = 0; i < iter.size(); i++)
           ofs << i << " " << iter[i].first<< " " << iter[i].second << endl;
+      ofs << endl;
         ofs.close();
     }
 }

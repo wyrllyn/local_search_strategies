@@ -1,24 +1,24 @@
 #include "climbn.h"
 
-extern vector<int64_t> iter;
+extern vector<float> iter;
 
 //OK
-int64_t first(int ** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
-	int64_t tmpcost;
+float first(int ** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
+	float tmpcost;
 	bool ok = false;
-	cout << "INIT Cost = " << cost  << endl;
+	//cout << "INIT Cost = " << cost  << endl;
 
 	//vector pair for each swap possibilities + size of reachable 
 	// size for swap = size of the vector
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j)	possibilities.push_back(make_pair(i,j));
 		}
 	}
 
-	cout << "possibilities SIZE = " << possibilities.size() << endl;
+	//cout << "possibilities SIZE = " << possibilities.size() << endl;
 
 	int size_for_swap = possibilities.size();
 	int cmp = 0;
@@ -50,18 +50,18 @@ int64_t first(int ** D, int ** F, vector<int> * sol) {
 		cmp++;
 	}
 
-	cout << "-------- number of iterations (ls_first) = " << cmp << endl;
+	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
 	return cost;
 }
 
 // local search with best
-int64_t best(int** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
+float best(int** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
 
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j) {
@@ -74,13 +74,13 @@ int64_t best(int** D, int ** F, vector<int> * sol) {
 
 	while(true) {
 		iter.push_back(cost);
-		cout << "iteration " << cmp << " cost is = " << cost << " (climber_best)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (climber_best)"<< endl;
 		int best_it = -1;
 		best_its.clear();
 		best_its.push_back(-1);
 
-		int64_t bestcost = cost;
-		int64_t tmpcost;
+		float bestcost = cost;
+		float tmpcost;
 
 		for (int i = 0; i < possibilities.size(); i++) {
 			//tmpcost = cost;
@@ -110,7 +110,7 @@ int64_t best(int** D, int ** F, vector<int> * sol) {
 		cost = bestcost;
 		cmp++;
 	}
-	cout << "-------- number of iterations (climber_best) = " << cmp << endl;
+	//cout << "-------- number of iterations (climber_best) = " << cmp << endl;
 
 	
 	return cost;
@@ -118,15 +118,15 @@ int64_t best(int** D, int ** F, vector<int> * sol) {
 
 
 // local search with worst
-int64_t worst(int** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
+float worst(int** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
 
 	vector<int> best_its;
 
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j) {
@@ -138,11 +138,11 @@ int64_t worst(int** D, int ** F, vector<int> * sol) {
 	while(true) {
 		iter.push_back(cost);
 		int best_it = -1;
-		int64_t wcost = -1;
-		int64_t tmpcost;
+		float wcost = -1;
+		float tmpcost;
 		best_its.clear();
 		best_its.push_back(-1);
-		cout << "iteration " << cmp << " cost is = " << cost << " (climber_worst)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (climber_worst)"<< endl;
 
 		for (int i = 0; i < possibilities.size(); i++) {
 			//tmpcost = cost;
@@ -174,26 +174,26 @@ int64_t worst(int** D, int ** F, vector<int> * sol) {
 		cmp++;
 	}
 
-	cout << "-------- number of iterations (climber_worst) = " << cmp << endl;
+	//cout << "-------- number of iterations (climber_worst) = " << cmp << endl;
 	return cost;
 }
 
-int64_t clone_first(int ** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
-	int64_t tmpcost;
+float clone_first(int ** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
+	float tmpcost;
 	bool ok = false;
-	cout << "INIT Cost = " << cost  << endl;
+	//cout << "INIT Cost = " << cost  << endl;
 
 	//vector pair for each swap possibilities + size of reachable 
 	// size for swap = size of the vector
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j)	possibilities.push_back(make_pair(i,j));
 		}
 	}
 
-	cout << "possibilities SIZE = " << possibilities.size() << endl;
+	//cout << "possibilities SIZE = " << possibilities.size() << endl;
 
 	int size_for_swap = possibilities.size();
 	int cmp = 0;
@@ -201,18 +201,18 @@ int64_t clone_first(int ** D, int ** F, vector<int> * sol) {
 		int index;
 		ok = false;
 		while(!ok) {
-			int64_t tmpcost2 = cost;
+			float tmpcost2 = cost;
 			index = rand() % size_for_swap;
 
-			tmpcost2 -= updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);
+			//tmpcost2 -= updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);
 
 			iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
 
-			tmpcost2 += updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);
+			//tmpcost2 += updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);
 
 			tmpcost = calculate_cost(D,F,(*sol));
 
-			if (tmpcost2 != tmpcost) cout << "problem with swaps : " << possibilities[index].first << " and " << possibilities[index].second << endl;
+			//if (tmpcost2 != tmpcost) cout << "problem with swaps : " << possibilities[index].first << " and " << possibilities[index].second << endl;
 			if(tmpcost < cost) {
 				cost = tmpcost;
 				ok = true;
@@ -232,7 +232,7 @@ int64_t clone_first(int ** D, int ** F, vector<int> * sol) {
 		cmp++;
 	}
 
-	cout << "-------- number of iterations (ls_first) = " << cmp << endl;
+	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
 	return cost;
 }
 

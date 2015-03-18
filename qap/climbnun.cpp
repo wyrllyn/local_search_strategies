@@ -1,15 +1,15 @@
 #include "climbnun.h"
 
-extern vector<int64_t> iter;
-extern vector<pair<int,int>> vrank;
+extern vector<float> iter;
+extern vector<pair<int,int> > vrank;
 
-int64_t nun_first(int ** D, int ** F, vector<int> * sol) {
+float nun_first(int ** D, int ** F, vector<int> * sol) {
 	
-	int64_t cost = calculate_cost(D,F,(*sol));
-	int64_t tmpcost;
+	float cost = calculate_cost(D,F,(*sol));
+	float tmpcost;
 	bool ok = false;
 
-	vector<pair<pair<int,int>,pair<int,int>>> poss;
+	vector<pair<pair<int,int>,pair<int,int> > > poss;
 	for (int i = 0; i < (*sol).size(); i++) {
 		for( int j = i + 1; j <  (*sol).size(); j++) {
 			if (i != j) {
@@ -30,7 +30,7 @@ int64_t nun_first(int ** D, int ** F, vector<int> * sol) {
 		iter.push_back(cost);
 		int index;
 		ok = false;
-		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
 		while(!ok) {
 			tmpcost = cost;
 			index = rand() % size_for_swap;
@@ -89,19 +89,19 @@ int64_t nun_first(int ** D, int ** F, vector<int> * sol) {
 		cmp++;
 	}
 
-	cout << "-------- number of iterations (ls_first) = " << cmp << endl;
+	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
 	return cost;
 }
 
 
 
-int64_t nun_best(int** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
+float nun_best(int** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
 	bool modif;
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
 
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j) {
@@ -113,11 +113,11 @@ int64_t nun_best(int** D, int ** F, vector<int> * sol) {
 
 	while(true) {
 		iter.push_back(cost);
-		cout << "iteration " << cmp << " cost is = " << cost << " (large_best_no_deter)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (large_best_no_deter)"<< endl;
 		int best_it = -1;
-		int64_t bestcost = cost;
-		int64_t tmpcost;
-		//int64_t newCost = cost;
+		float bestcost = cost;
+		float tmpcost;
+		//float newCost = cost;
 		best_its.clear();
 		best_its.push_back(-1);
 
@@ -176,21 +176,21 @@ int64_t nun_best(int** D, int ** F, vector<int> * sol) {
 		cost = calculate_cost(D,F,(*sol)) ;
 		cmp++;
 	}
-	cout << "-------- number of iterations (large_best) = " << cmp << endl;
+	//cout << "-------- number of iterations (large_best) = " << cmp << endl;
 
 	return cost;
 
 }
 
-int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
+float nun_ME(int** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
 
-	vector<int64_t> tmprank;
+	vector<float> tmprank;
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
 
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	vector<int> better;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
@@ -203,9 +203,9 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 	while(true) {
 		if (tmprank.size() > 0) tmprank.clear();
 		iter.push_back(cost);
-		cout << "iteration " << cmp << " cost is = " << cost << " (ME climber)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (ME climber)"<< endl;
 		for (int i = 0; i < possibilities.size(); i++) {
-			int64_t tmpcost = cost;
+			float tmpcost = cost;
 
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
 			tmpcost = calculate_cost(D,F,(*sol));
@@ -235,7 +235,7 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 
 	int best_it = -1;
 	int bestcost = cost;
-	int64_t tmpcost;
+	float tmpcost;
 	for (int i = 0; i < possibilities.size(); i++) {
 		tmpcost = cost;
 		iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
@@ -251,7 +251,7 @@ int64_t nun_ME(int** D, int ** F, vector<int> * sol) {
 	cost = bestcost;
 	iter.push_back(cost);
 
-	cout << "-------- number of iterations = " << cmp << endl;
+	//cout << "-------- number of iterations = " << cmp << endl;
 
 	return cost;
 }

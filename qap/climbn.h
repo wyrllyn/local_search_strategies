@@ -4,12 +4,12 @@
 #include "methods.h"
 #include <algorithm>   
 
-int64_t first(int ** D, int ** F, vector<int> * sol);
+float first(int ** D, int ** F, vector<int> * sol);
 
-int64_t best(int** D, int ** F, vector<int> * sol);
+float best(int** D, int ** F, vector<int> * sol);
 
-int64_t worst(int** D, int ** F, vector<int> * sol);
+float worst(int** D, int ** F, vector<int> * sol);
 
-int64_t clone_first(int ** D, int ** F, vector<int> * sol);
+float clone_first(int ** D, int ** F, vector<int> * sol);
 
 #endif

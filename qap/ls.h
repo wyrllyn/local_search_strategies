@@ -4,13 +4,13 @@
 #include "methods.h"
 #include <algorithm>   
 
-int64_t ls_ME(int** D, int ** F, vector<int> * sol);
+float ls_ME(int** D, int ** F, vector<int> * sol);
 
-int64_t ls_best(int** D, int ** F, vector<int> * sol);
+float ls_best(int** D, int ** F, vector<int> * sol);
 
-int64_t ls_worst(int** D, int ** F, vector<int> * sol);
+float ls_worst(int** D, int ** F, vector<int> * sol);
 
-int64_t ls_first(int ** D, int ** F, vector<int> * sol);
+float ls_first(int ** D, int ** F, vector<int> * sol);
 
 
 

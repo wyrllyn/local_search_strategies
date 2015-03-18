@@ -3,45 +3,60 @@
 #include "climbnun.h"
 #include "climblarge.h"
 #include "parser.h"
+#include <sstream>
 #include <limits>
 
-vector<int64_t> iter;
-vector<int64_t> me;
-vector<pair<int,int>> vrank;
+vector<float> iter;
+vector<float> me;
+vector<pair<int,int> > vrank;
 
 int main(int argc, char** argv) {
-	int s = 10;
-	int method = 6;
-	string filename = "qapdata/nug30.dat";
+	int s = 100;
+	int method = 13;
+	string filename = "instances/nug30.dat";
 	vector<string> fl;
-	fl = tokenize(filename, "/");
+	
 
 	int ** D;
 	int ** F;
 	int n;
 
 	vector<int> sol;
-	int64_t cost = -1;
+	float cost = -1;
 
 	if (argc > 1) filename = argv[1];
 	if (argc > 2) method = atoi(argv[2]);
 	if (argc > 3) s = atoi(argv[3]);
 
+	fl = tokenize(filename, "/");
+
 	srand(s);
+
+	cout << "file is " << filename << endl;
 
 	parse_qap(&D, &F, &n, filename);
 	init_sol(&sol, n);
-	cout << "INIT COST = " << calculate_cost(D,F,sol) << endl;
 
-	string res;
-	string res_me;
-	string res_rank;
 
-	res = fl[1] + "-m" + to_string(method) + "-s" + to_string(s) + "-iter" + ".txt";
-	res_me = fl[1] + "-m" + to_string(method) + "-s" + to_string(s) + "-me" + ".txt";
-	res_rank = fl[1] + "-m" + to_string(method) + "-s" + to_string(s) + "-rank" + ".txt";
+
+//////////////////////
+	///////////////////////////////////
+	std::stringstream ssr;
+	ssr << "res/" << fl[1] << "-m" << method <<"-s" << s << "-iter.txt";
+	string res = ssr.str();
+
+	std::stringstream ssm;
+	ssm << "res/" << fl[1] << "-m" << method <<"-s" << s <<  "-me.txt";
+	string res_me = ssm.str();
+
+	std::stringstream ssra;
+	ssra<< "res/" << fl[1] << "-m" << method <<"-s" << s <<  "-rank.txt";
+	string res_rank = ssra.str();
+////////////////////////////////
+	///////////////////////////////////
 
 	cout << res << endl;
+
 
 	switch(method) {
 		case 1:
@@ -83,14 +98,11 @@ int main(int argc, char** argv) {
 		case 13:
 			cost = ls_ME(D,F, &sol);
 			break;
-		case 15:
-			cost = clone_first(D,F, &sol);
-			break;
 	}
 
 	
 
-	cout << "FINAL Cost = " << cost  << " = " << calculate_cost(D,F,sol) <<   endl;
+	//cout << "FINAL Cost = " << cost  << " = " << calculate_cost(D,F,sol) <<   endl;
 
 	write_res(res, iter);
 	if (me.size() > 0) write_res(res_me, me);

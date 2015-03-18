@@ -2,16 +2,16 @@
 
 //int MAX_ITER = 10000;
 
-extern vector<int64_t> iter;
+extern vector<float> iter;
 
 
-int64_t large_first(int ** D, int ** F, vector<int> * sol) {
+float large_first(int ** D, int ** F, vector<int> * sol) {
 
-	int64_t cost = calculate_cost(D,F,(*sol));
-	int64_t tmpcost;
+	float cost = calculate_cost(D,F,(*sol));
+	float tmpcost;
 	bool ok = false;
 	cout << "INIT Cost = " << cost  << endl;
-	vector<pair<pair<int,int>,pair<int,int>>> poss;
+	vector<pair<pair<int,int>,pair<int,int> > > poss;
 	for (int i = 0; i < (*sol).size(); i++) {
 		for( int j = i + 1; j <  (*sol).size(); j++) {
 			if (i != j) {
@@ -32,7 +32,7 @@ int64_t large_first(int ** D, int ** F, vector<int> * sol) {
 		iter.push_back(cost);
 		int index;
 		ok = false;
-		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
 		while(!ok) {
 			tmpcost = cost;
 			index = rand() % size_for_swap;
@@ -84,19 +84,19 @@ int64_t large_first(int ** D, int ** F, vector<int> * sol) {
 		cmp++;
 	}
 
-	cout << "-------- number of iterations (ls_first) = " << cmp << endl;
+	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
 	return cost;
 }
 
-int64_t large_best(int** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
+float large_best(int** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
 
 	bool modif;
 
 	int cmp = 0;
 	//pair<int,int> tmp_pair = make_pair(0,0);
 
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j) {
@@ -105,15 +105,15 @@ int64_t large_best(int** D, int ** F, vector<int> * sol) {
 		}
 	}
 
-	vector<pair<int,int>> best_its;
+	vector<pair<int,int> > best_its;
 
 	while(true) {
 		iter.push_back(cost);
-		cout << "iteration " << cmp << " cost is = " << cost << " (large_best)"<< endl;
+		//cout << "iteration " << cmp << " cost is = " << cost << " (large_best)"<< endl;
 		int best_it = -1;
-		int64_t bestcost = cost;
-		int64_t tmpcost;
-		//int64_t newCost = cost;
+		float bestcost = cost;
+		float tmpcost;
+		//float newCost = cost;
 		best_its.clear();
 		best_its.push_back(make_pair(-1,-1));
 		for (int i = 0; i < possibilities.size(); i++) {
@@ -170,28 +170,28 @@ int64_t large_best(int** D, int ** F, vector<int> * sol) {
 		iter_swap((*sol).begin() + possibilities[best_its[0].first].first, (*sol).begin() + possibilities[best_its[0].first].second);
 		if (best_its[0].second != -1) {
 			iter_swap((*sol).begin() + possibilities[best_its[0].second].first, (*sol).begin() + possibilities[best_its[0].second].second);
-			cout << "----------- 2moves" << endl;
+		//	cout << "----------- 2moves" << endl;
 		}
 		cost = calculate_cost(D,F,(*sol)) ;
 		cmp++;
 		// used when cycles...
 	//	if (cmp > MAX_ITER) break;
 	}
-	cout << "-------- number of iterations (large_best) = " << cmp << endl;
+	//cout << "-------- number of iterations (large_best) = " << cmp << endl;
 
 	return cost;
 }
 
 
-int64_t large_worst(int** D, int ** F, vector<int> * sol) {
-	int64_t cost = calculate_cost(D,F,(*sol));
+float large_worst(int** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
 
 	bool modif;
 
 	int cmp = 0;
 //	pair<int,int> tmp_pair = make_pair(0,0);
 
-	vector<pair<int,int>> possibilities;
+	vector<pair<int,int> > possibilities;
 	for (int i = 0; i < (*sol).size() - 1; i++) {
 		for (int j = i + 1; j < (*sol).size(); j++) {
 			if (i != j) {
@@ -200,15 +200,15 @@ int64_t large_worst(int** D, int ** F, vector<int> * sol) {
 		}
 	}
 
-	vector<pair<int,int>> w_its;
+	vector<pair<int,int> > w_its;
 
 	while(true) {
 		iter.push_back(cost);
-		cout << "iteration " << cmp << " cost is = " << cost << " (large_worst)"<< endl;
+	//	cout << "iteration " << cmp << " cost is = " << cost << " (large_worst)"<< endl;
 		if (cost != calculate_cost(D,F,(*sol)) ) break;
 		int best_it = -1;
-		int64_t bestcost = -1;
-		int64_t tmpcost;
+		float bestcost = -1;
+		float tmpcost;
 		w_its.clear();
 		w_its.push_back(make_pair(-1,-1));
 
@@ -259,7 +259,7 @@ int64_t large_worst(int** D, int ** F, vector<int> * sol) {
 
 		iter_swap((*sol).begin() + possibilities[w_its[0].first].first, (*sol).begin() + possibilities[w_its[0].first].second);
 		if (w_its[0].second != -1) {
-			cout << "----- 2 moves" << endl;
+		//	cout << "----- 2 moves" << endl;
 			iter_swap((*sol).begin() + possibilities[w_its[0].second].first, (*sol).begin() + possibilities[w_its[0].second].second);
 		}
 		cost = calculate_cost(D,F,(*sol));
@@ -267,7 +267,7 @@ int64_t large_worst(int** D, int ** F, vector<int> * sol) {
 		// used when cycles...
 	//	if (cmp > MAX_ITER) break;
 	}
-	cout << "-------- number of iterations (large_worst) = " << cmp << endl;
+	//cout << "-------- number of iterations (large_worst) = " << cmp << endl;
 
 	return cost;
 }
