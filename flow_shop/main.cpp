@@ -1,10 +1,12 @@
 #include "parser.h"
+#include "methods.h"
+#include "ls.h"
 
 #include <sstream>
 
 
 int main(int argc, char** argv) {
-	int s = 100;
+	int s = time(NULL)/* 100*/;
 	int method = 1;
 	string filename = "instances/20_5_01_ta001.txt";
 
@@ -16,15 +18,31 @@ int main(int argc, char** argv) {
 	int njobs;
 	int nmach;
 
+	vector<int> sol;
+
+	srand(s);
+
 	parse_fs(&d, &njobs, &nmach, filename);
 
-	for (int i = 0; i < njobs ; i++) {
+/*	for (int i = 0; i < njobs ; i++) {
 		for (int j = 0; j < nmach; j++) {
 			cout << d[i][j] << " ";
 		}
 
 		cout << endl;
-	}
+	}*/
+
+	init(njobs, &sol);	
+
+	cout << "final = " << best(d, njobs, nmach, &sol) << endl;
+
+	for (int i = 0; i < sol.size(); i++) cout << sol[i] << " " ;
+		cout << endl;
+
+
+
+
+
 
 	for (int i = 0; i < njobs; i++) {
 		free(d[i]);

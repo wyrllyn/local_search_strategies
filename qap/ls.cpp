@@ -105,7 +105,7 @@ float ls_first(int ** D, int ** F, vector<int> * sol) {
 		if(size_for_swap == 0) break;
 		size_for_swap = poss.size();
 		cmp++;
-		if (cmp > MAX_ITER) break;
+		//if (cmp > MAX_ITER) break;
 	}
 
 	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
@@ -191,7 +191,7 @@ float ls_ME(int** D, int ** F, vector<int> * sol) {
 		iter_swap((*sol).begin() + possibilities[index].first, (*sol).begin() + possibilities[index].second);
 		cost = calculate_cost(D,F,(*sol));
 		cmp++;
-		if (cmp > MAX_ITER) break;
+		//if (cmp > MAX_ITER) break;
 	}
 	//cout << "-------- number of iterations = " << cmp << endl;
 
@@ -382,7 +382,7 @@ float ls_worst(int** D, int ** F, vector<int> * sol) {
 		iter_swap((*sol).begin() + possibilities[best_its[0]].first, (*sol).begin() + possibilities[best_its[0]].second);
 		cost = calculate_cost(D,F,(*sol));
 		cmp++;
-		if (cmp > MAX_ITER) break;
+		//if (cmp > MAX_ITER) break;
 	}
 	//cout << "-------- number of iterations (large_worst) = " << cmp << endl;
 
