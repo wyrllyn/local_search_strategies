@@ -1,9 +1,9 @@
 #!/bin/sh
 
-UNPARAMETRE="1 2"
+UNPARAMETRE="8 9 11 12 13"
 
 for I in `ls instances` ; do
 for J in $UNPARAMETRE ; do
-qsub -cwd -pe param 1 -t 100-199 run.sh $I $J
+qsub -cwd -pe param 1 run.sh $I $J
 done;
 done;

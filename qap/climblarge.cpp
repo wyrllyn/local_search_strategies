@@ -5,7 +5,7 @@
 extern vector<float> iter;
 
 
-float large_first(int ** D, int ** F, vector<int> * sol) {
+/*float large_first(int ** D, int ** F, vector<int> * sol) {
 
 	float cost = calculate_cost(D,F,(*sol));
 	float tmpcost;
@@ -40,8 +40,9 @@ float large_first(int ** D, int ** F, vector<int> * sol) {
 			pair<int,int> s1 = poss[index].first;
 			pair<int,int> s2 = poss[index].second;
 
+			tmpcost -= updateCost(D,F, *sol, s1.first, s1.second);
 			iter_swap((*sol).begin() + s1.first, (*sol).begin() + s1.second);
-			tmpcost = calculate_cost(D,F,(*sol));
+			tmpcost += updateCost(D,F, *sol, s1.first, s1.second);
 
 			if(s1.first == s2.first && s1.second == s2.second) {
 				if(tmpcost < cost) {
@@ -58,9 +59,10 @@ float large_first(int ** D, int ** F, vector<int> * sol) {
 
 			}
 			else {
-				int tmpcost2 ;
+				int tmpcost2 = tmpcost ;
+				tmpcost2 -= updateCost(D,F, *sol, s2.first, s2.second);
 				iter_swap((*sol).begin() + s2.first, (*sol).begin() + s2.second);
-				tmpcost2 = calculate_cost(D,F,(*sol));
+				tmpcost2 += updateCost(D,F, *sol, s2.first, s2.second);
 
 				if (tmpcost2 < cost) {
 					ok = true;
@@ -85,6 +87,73 @@ float large_first(int ** D, int ** F, vector<int> * sol) {
 	}
 
 	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
+	return cost;
+}*/
+
+float large_first(int ** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
+	int cmp = 0;
+
+	vector<pair<int,int> > poss1;
+	vector<pair<int,int> > poss2;
+	for (int i = 0; i < (*sol).size() - 1; i++) {
+		for (int j = i + 1; j < (*sol).size(); j++) {
+			if (i != j) {
+				poss1.push_back(make_pair(i,j));
+				poss2.push_back(make_pair(i,j));
+			}
+		}
+	}
+
+	vector<pair <pair <int,int>, pair<int,int> > > swaps;
+
+	while(true) {
+		swaps.clear();
+		iter.push_back(cost);
+		//cout << cmp << " : cost = " << cost << endl;
+		float tmpcost = cost;
+
+		for (int i = 0; i < poss1.size(); i++) {
+			iter_swap((*sol).begin() + poss1[i].first, (*sol).begin() + poss1[i].second);
+			tmpcost = calculate_cost(D,F,(*sol));
+			if (tmpcost < cost) {
+				swaps.push_back(make_pair(poss1[i], poss1[i]));
+			}	
+
+			for (int j = 0; j < poss2.size(); j++) {
+
+				int tmpcost2 = tmpcost;
+
+				tmpcost2 -= updateCost(D,F, *sol, poss2[j].first, poss2[j].second);
+				iter_swap((*sol).begin() + poss2[j].first, (*sol).begin() + poss2[j].second);
+				tmpcost2 += updateCost(D,F, *sol, poss2[j].first, poss2[j].second);
+
+				iter_swap((*sol).begin() + poss2[j].first, (*sol).begin() + poss2[j].second);
+
+				if (tmpcost2 < cost) {
+					swaps.push_back(make_pair(poss1[i], poss2[j]));
+				}
+			}
+			iter_swap((*sol).begin() + poss1[i].first, (*sol).begin() + poss1[i].second);
+
+		}
+		if (swaps.size() == 0) break;
+		int ind = rand() % swaps.size();
+
+		iter_swap((*sol).begin() + swaps[ind].first.first, (*sol).begin() + swaps[ind].first.second);
+		if (swaps[ind].first != swaps[ind].second) {
+			//cout << "2 moves  : " << swaps[ind].first.first << " , " << swaps[ind].first.second << " and "  << swaps[ind].second.first << " , "  <<  swaps[ind].second.second << endl;
+			iter_swap((*sol).begin() + swaps[ind].second.first, (*sol).begin() + swaps[ind].second.second);
+		}
+		else {
+			//cout << "1 move" << endl;
+		}
+
+		cost = calculate_cost(D,F,(*sol));
+		cmp++;
+	}
+
+	//cout << "final cost = " << cost << endl;
 	return cost;
 }
 

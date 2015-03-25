@@ -3,6 +3,7 @@
 extern vector<float> iter;
 extern vector<pair<int,int> > vrank;
 
+/*
 float nun_first(int ** D, int ** F, vector<int> * sol) {
 	
 	float cost = calculate_cost(D,F,(*sol));
@@ -30,7 +31,7 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 		iter.push_back(cost);
 		int index;
 		ok = false;
-		//cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
+		cout << "iteration " << cmp << " cost is = " << cost << " (large_first)"<< endl;
 		while(!ok) {
 			tmpcost = cost;
 			index = rand() % size_for_swap;
@@ -38,8 +39,14 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 			pair<int,int> s1 = poss[index].first;
 			pair<int,int> s2 = poss[index].second;
 
+			tmpcost -= updateCost(D,F, *sol, s1.first, s1.second);
 			iter_swap((*sol).begin() + s1.first, (*sol).begin() + s1.second);
-			tmpcost = calculate_cost(D,F,(*sol));
+			tmpcost += updateCost(D,F, *sol, s1.first, s1.second);
+
+		//	tmpcost = calculate_cost(D,F,(*sol));
+
+		//	cout << tmpcost << " 1vs " << calculate_cost(D,F,(*sol)) << endl;
+			//if (tmpcost != calculate_cost(D,F,(*sol))) cout << "ERROR" << endl;
 
 			if(tmpcost >= cost) {
 				iter_swap((*sol).begin() + s1.first, (*sol).begin() + s1.second);
@@ -62,9 +69,14 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 
 				}
 				else {
-					int tmpcost2 ;
+					int tmpcost2 = tmpcost ;
+					tmpcost2 -= updateCost(D,F, *sol, s2.first, s2.second);
 					iter_swap((*sol).begin() + s2.first, (*sol).begin() + s2.second);
-					tmpcost2 = calculate_cost(D,F,(*sol));
+					tmpcost2 += updateCost(D,F, *sol, s2.first, s2.second);
+
+
+				//	tmpcost2 = calculate_cost(D,F,(*sol));
+				//	if (tmpcost2 != calculate_cost(D,F,(*sol))) cout << "ERROR 2" << endl;
 
 					if (tmpcost2 < cost) {
 						ok = true;
@@ -83,6 +95,7 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 			}
 			if(size_for_swap == 0) break;
 		}
+		cout << size_for_swap << endl;
 
 		if(size_for_swap == 0) break;
 		size_for_swap = poss.size();
@@ -90,6 +103,66 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 	}
 
 	//cout << "-------- number of iterations (ls_first) = " << cmp << endl;
+	return cost;
+}
+
+*/
+
+float nun_first(int ** D, int ** F, vector<int> * sol) {
+	float cost = calculate_cost(D,F,(*sol));
+	int cmp = 0;
+
+	vector<pair<int,int> > poss1;
+	vector<pair<int,int> > poss2;
+	for (int i = 0; i < (*sol).size() - 1; i++) {
+		for (int j = i + 1; j < (*sol).size(); j++) {
+			if (i != j) {
+				poss1.push_back(make_pair(i,j));
+				poss2.push_back(make_pair(i,j));
+			}
+		}
+	}
+
+	vector<pair<int,int> > swaps;
+
+	while(true) {
+		swaps.clear();
+		iter.push_back(cost);
+		//cout << cmp << " : cost = " << cost << endl;
+		float tmpcost = cost;
+		for (int i = 0; i < poss1.size(); i++) {
+			iter_swap((*sol).begin() + poss1[i].first, (*sol).begin() + poss1[i].second);
+			tmpcost = calculate_cost(D,F,(*sol));
+			if (tmpcost < cost) {
+				swaps.push_back(poss1[i]);
+				for (int j = 0; j < poss2.size(); j++) {
+
+					int tmpcost2 = tmpcost;
+
+					tmpcost2 -= updateCost(D,F, *sol, poss2[j].first, poss2[j].second);
+					iter_swap((*sol).begin() + poss2[j].first, (*sol).begin() + poss2[j].second);
+					tmpcost2 += updateCost(D,F, *sol, poss2[j].first, poss2[j].second);
+
+					iter_swap((*sol).begin() + poss2[j].first, (*sol).begin() + poss2[j].second);
+
+					if (tmpcost2 < cost) {
+						//add
+						swaps.push_back(poss1[i]);
+						break;
+					}
+				}
+			}
+			iter_swap((*sol).begin() + poss1[i].first, (*sol).begin() + poss1[i].second);
+		}
+		if (swaps.size() == 0) break;
+		int ind = rand() % swaps.size();
+
+		iter_swap((*sol).begin() + swaps[ind].first, (*sol).begin() + swaps[ind].second );
+		cost = calculate_cost(D,F,(*sol));
+		cmp++;
+	}
+
+	//cout << "final cost = " << cost << endl;
 	return cost;
 }
 

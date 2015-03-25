@@ -12,8 +12,8 @@ vector<pair<int,int> > vrank;
 
 int main(int argc, char** argv) {
 	int s = 100;
-	int method = 13;
-	string filename = "instances/nug30.dat";
+	int method = 10;
+	string filename = "instances/tai50a.dat";
 	vector<string> fl;
 	
 
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
 	srand(s);
 
-	cout << "file is " << filename << endl;
+	//cout << "file is " << filename << endl;
 
 	parse_qap(&D, &F, &n, filename);
 	init_sol(&sol, n);
