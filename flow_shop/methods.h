@@ -12,6 +12,6 @@ using namespace std;
 void init(int jobs, vector<int> * sol);
 bool isInto(vector<int> s, int n);
 
-float tft(int **d, int jobs, int machs, vector<int> sol);
+long tft(int **d, int jobs, int machs, vector<int> sol);
 
 #endif

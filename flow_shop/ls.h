@@ -3,8 +3,26 @@
 
 #include "methods.h"
 
-float first(int ** d, int jobs, int machs, vector<int> * sol);
+long first(int ** d, int jobs, int machs, vector<int> * sol);
 
-float best(int ** d, int jobs, int machs, vector<int> * sol);
+long best(int ** d, int jobs, int machs, vector<int> * sol);
+
+long worst(int ** d, int jobs, int machs, vector<int> * sol);
+
+///////////////////////////////////////////////////
+long nun_first(int ** d, int jobs, int machs, vector<int> * sol);
+
+long nun_best(int ** d, int jobs, int machs, vector<int> * sol);
+
+long nun_me(int ** d, int jobs, int machs, vector<int> * sol);
+
+////////////////////////////////////////////////////
+
+long large_first(int ** d, int jobs, int machs, vector<int> * sol);
+
+long large_best(int ** d, int jobs, int machs, vector<int> * sol);
+
+long large_worst(int ** d, int jobs, int machs, vector<int> * sol);
+
 
 #endif

@@ -14,12 +14,18 @@ bool isInto(vector<int> s, int n) {
 	return false;
 }
 
-float tft(int **d, int jobs, int machs, vector<int> sol) {
-	float toReturn = 0;
-	int ** mat = (int**)malloc(sizeof(int*) * jobs );
+long tft(int **d, int jobs, int machs, vector<int> sol) {
+	long toReturn = 0;
+	//int ** mat = (int**)malloc(sizeof(int*) * jobs );
+	int ** mat = new int*[jobs];
+	//cout << "alloc done" << endl;
 	for (int i = 0; i < jobs ; i++ ) {
-		mat[i] = (int*) malloc(sizeof(int) * machs);
+	//	cout << i << "on " << jobs << endl;
+		//mat[i] = (int*) malloc(sizeof(int) * machs);
+		mat[i] = new int[machs];
 	}
+
+
 	//// compute /////
 
 	for (int i = 0; i < sol.size(); i++) {
@@ -38,9 +44,11 @@ float tft(int **d, int jobs, int machs, vector<int> sol) {
 
 
 	for (int  i =0; i < jobs; i++) {
-		free(mat[i]);
+		delete [] mat[i];
 	}
-	free(mat);
+	delete [] mat;
+
+
 
 	return toReturn;
 }
