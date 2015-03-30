@@ -82,7 +82,7 @@ vector<string> tokenize(string toSplit, string token) {
     return result;
 }
 
-void write_res(string fileName, vector<float> iter) {
+void write_res(string fileName, vector<long> iter) {
 
    // cout << "test" << endl;
   //  ofstream ofs;

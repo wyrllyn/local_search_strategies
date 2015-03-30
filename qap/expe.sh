@@ -1,6 +1,6 @@
 #!/bin/sh
 
-UNPARAMETRE="8 9 11 12 13"
+UNPARAMETRE="5 6"
 
 for I in `ls instances` ; do
 for J in $UNPARAMETRE ; do

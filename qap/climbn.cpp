@@ -1,11 +1,11 @@
 #include "climbn.h"
 
-extern vector<float> iter;
+extern vector<long> iter;
 
 //OK
-float first(int ** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
-	float tmpcost;
+long first(int ** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
+	long tmpcost;
 	bool ok = false;
 	//cout << "INIT Cost = " << cost  << endl;
 
@@ -55,8 +55,8 @@ float first(int ** D, int ** F, vector<int> * sol) {
 }
 
 // local search with best
-float best(int** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
+long best(int** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
@@ -79,8 +79,8 @@ float best(int** D, int ** F, vector<int> * sol) {
 		best_its.clear();
 		best_its.push_back(-1);
 
-		float bestcost = cost;
-		float tmpcost;
+		long bestcost = cost;
+		long tmpcost;
 
 		for (int i = 0; i < possibilities.size(); i++) {
 			//tmpcost = cost;
@@ -118,8 +118,8 @@ float best(int** D, int ** F, vector<int> * sol) {
 
 
 // local search with worst
-float worst(int** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
+long worst(int** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
@@ -138,8 +138,8 @@ float worst(int** D, int ** F, vector<int> * sol) {
 	while(true) {
 		iter.push_back(cost);
 		int best_it = -1;
-		float wcost = -1;
-		float tmpcost;
+		long wcost = -1;
+		long tmpcost;
 		best_its.clear();
 		best_its.push_back(-1);
 		//cout << "iteration " << cmp << " cost is = " << cost << " (climber_worst)"<< endl;
@@ -178,9 +178,9 @@ float worst(int** D, int ** F, vector<int> * sol) {
 	return cost;
 }
 
-float clone_first(int ** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
-	float tmpcost;
+long clone_first(int ** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
+	long tmpcost;
 	bool ok = false;
 	//cout << "INIT Cost = " << cost  << endl;
 
@@ -201,7 +201,7 @@ float clone_first(int ** D, int ** F, vector<int> * sol) {
 		int index;
 		ok = false;
 		while(!ok) {
-			float tmpcost2 = cost;
+			long tmpcost2 = cost;
 			index = rand() % size_for_swap;
 
 			//tmpcost2 -= updateCost(D, F, *sol, possibilities[index].first, possibilities[index].second);

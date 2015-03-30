@@ -6,14 +6,14 @@
 #include <sstream>
 #include <limits>
 
-vector<float> iter;
-vector<float> me;
+vector<long> iter;
+vector<long> me;
 vector<pair<int,int> > vrank;
 
 int main(int argc, char** argv) {
-	int s = 100;
-	int method = 10;
-	string filename = "instances/tai50a.dat";
+	int s = 130;
+	int method = 12;
+	string filename = "instances/bur26a.dat";
 	vector<string> fl;
 	
 
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	int n;
 
 	vector<int> sol;
-	float cost = -1;
+	long cost = -1;
 
 	if (argc > 1) filename = argv[1];
 	if (argc > 2) method = atoi(argv[2]);

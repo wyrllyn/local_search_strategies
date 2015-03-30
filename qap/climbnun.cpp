@@ -1,13 +1,13 @@
 #include "climbnun.h"
 
-extern vector<float> iter;
+extern vector<long> iter;
 extern vector<pair<int,int> > vrank;
 
 /*
-float nun_first(int ** D, int ** F, vector<int> * sol) {
+long nun_first(int ** D, int ** F, vector<int> * sol) {
 	
-	float cost = calculate_cost(D,F,(*sol));
-	float tmpcost;
+	long cost = calculate_cost(D,F,(*sol));
+	long tmpcost;
 	bool ok = false;
 
 	vector<pair<pair<int,int>,pair<int,int> > > poss;
@@ -108,8 +108,8 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 
 */
 
-float nun_first(int ** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
+long nun_first(int ** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
 	int cmp = 0;
 
 	vector<pair<int,int> > poss1;
@@ -129,7 +129,7 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 		swaps.clear();
 		iter.push_back(cost);
 		//cout << cmp << " : cost = " << cost << endl;
-		float tmpcost = cost;
+		long tmpcost = cost;
 		for (int i = 0; i < poss1.size(); i++) {
 			iter_swap((*sol).begin() + poss1[i].first, (*sol).begin() + poss1[i].second);
 			tmpcost = calculate_cost(D,F,(*sol));
@@ -138,10 +138,8 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 				for (int j = 0; j < poss2.size(); j++) {
 
 					int tmpcost2 = tmpcost;
-
-					tmpcost2 -= updateCost(D,F, *sol, poss2[j].first, poss2[j].second);
 					iter_swap((*sol).begin() + poss2[j].first, (*sol).begin() + poss2[j].second);
-					tmpcost2 += updateCost(D,F, *sol, poss2[j].first, poss2[j].second);
+					tmpcost2 = calculate_cost(D,F,(*sol));
 
 					iter_swap((*sol).begin() + poss2[j].first, (*sol).begin() + poss2[j].second);
 
@@ -168,8 +166,8 @@ float nun_first(int ** D, int ** F, vector<int> * sol) {
 
 
 
-float nun_best(int** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
+long nun_best(int** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
 	bool modif;
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
@@ -188,9 +186,9 @@ float nun_best(int** D, int ** F, vector<int> * sol) {
 		iter.push_back(cost);
 		//cout << "iteration " << cmp << " cost is = " << cost << " (large_best_no_deter)"<< endl;
 		int best_it = -1;
-		float bestcost = cost;
-		float tmpcost;
-		//float newCost = cost;
+		long bestcost = cost;
+		long tmpcost;
+		//long newCost = cost;
 		best_its.clear();
 		best_its.push_back(-1);
 
@@ -255,10 +253,10 @@ float nun_best(int** D, int ** F, vector<int> * sol) {
 
 }
 
-float nun_ME(int** D, int ** F, vector<int> * sol) {
-	float cost = calculate_cost(D,F,(*sol));
+long nun_ME(int** D, int ** F, vector<int> * sol) {
+	long cost = calculate_cost(D,F,(*sol));
 
-	vector<float> tmprank;
+	vector<long> tmprank;
 
 	int cmp = 0;
 	pair<int,int> tmp_pair = make_pair(0,0);
@@ -278,7 +276,7 @@ float nun_ME(int** D, int ** F, vector<int> * sol) {
 		iter.push_back(cost);
 		//cout << "iteration " << cmp << " cost is = " << cost << " (ME climber)"<< endl;
 		for (int i = 0; i < possibilities.size(); i++) {
-			float tmpcost = cost;
+			long tmpcost = cost;
 
 			iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);
 			tmpcost = calculate_cost(D,F,(*sol));
@@ -308,7 +306,7 @@ float nun_ME(int** D, int ** F, vector<int> * sol) {
 
 	int best_it = -1;
 	int bestcost = cost;
-	float tmpcost;
+	long tmpcost;
 	for (int i = 0; i < possibilities.size(); i++) {
 		tmpcost = cost;
 		iter_swap((*sol).begin() + possibilities[i].first, (*sol).begin() + possibilities[i].second);

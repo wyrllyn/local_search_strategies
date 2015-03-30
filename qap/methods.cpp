@@ -1,6 +1,6 @@
 #include "methods.h"
 
-extern vector<float> me;
+extern vector<long> me;
 extern vector<pair<int,int> > vrank;
 
 void init_sol(vector<int> *sol, int n) {
@@ -13,8 +13,8 @@ void init_sol(vector<int> *sol, int n) {
 	}
 }
 
-float calculate_cost(int ** D, int ** F, vector<int> sol ) {
-	float cost = 0;
+long calculate_cost(int ** D, int ** F, vector<int> sol ) {
+	long cost = 0;
 	for (int i = 0; i < sol.size(); i++) {
 		for (int j = 0; j < sol.size(); j++) {
 			cost += D[i][j] * F[sol[i]][sol[j]];
@@ -24,7 +24,7 @@ float calculate_cost(int ** D, int ** F, vector<int> sol ) {
 }
 
 
-int ran(vector<float> v, float c) {
+int ran(vector<long> v, long c) {
 	int nb = 0;
 	for (int i = 0; i < v.size(); i++) {
 		if (v[i] < c) nb++;
@@ -42,22 +42,19 @@ bool isIntoVect(vector<int> v, int val) {
 // used in max expand
 
 
-int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float comparative_cost) {
-	float solCost = calculate_cost(D,F,sol);
-	//float tmpcost;
-	float secondcost = solCost;
+int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long comparative_cost) {
+	long solCost = calculate_cost(D,F,sol);
+	//long tmpcost;
+	long secondcost = solCost;
 	int nb = 0;
 	for (int i = 0; i < possibilities.size(); i++) {
 	//	tmpcost = comparative_cost;
 
-		float scost = solCost;
-		//secondcost = solCost;
-
-		scost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		long scost = solCost;
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
-		scost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		scost = calculate_cost(D,F,sol);
 
 	//	secondcost = calculate_cost(D,F,sol);
 
@@ -74,19 +71,17 @@ int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possib
 
 
 
-int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost, bool * modif) {
-	float tmpBestCost = (*bestCost);
+int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost, bool * modif) {
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
-
-		tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		long tmpCost = currentCost;
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
-		tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		tmpCost = calculate_cost(D,F, sol);
 
 		//tmpCost = calculate_cost(D,F,sol);
 
@@ -110,20 +105,17 @@ int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possi
 	}
 	return index[0];
 }
-int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost, bool * modif) {
-	float tmpBestCost = (*bestCost);
+int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost, bool * modif) {
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
-
-		tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		long tmpCost = currentCost;
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
-		tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
-
+		tmpCost = calculate_cost(D,F,sol);
 		//tmpCost = calculate_cost(D,F,sol);
 
 		if(tmpCost < tmpBestCost) {
@@ -154,20 +146,18 @@ int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > poss
 
 
 
-int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost,  bool * modif) {
+int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost,  bool * modif) {
 //	cout << " ###############################################" << endl;
-	float tmpBestCost = (*bestCost);
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
-
-		tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		long tmpCost = currentCost;
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
-		tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		tmpCost = calculate_cost(D,F,sol);
 
 	//	tmpCost = calculate_cost(D,F,sol);
 
@@ -195,29 +185,28 @@ int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possib
 	return index[0];
 }
 
-int checkWorst2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost,  bool * modif) {
+int checkWorst2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost,  bool * modif) {
 //	cout << " ###############################################" << endl;
-	float tmpBestCost = (*bestCost);
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
-		
-		tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
+		long tmpCost = currentCost;
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
-		tmpCost += updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );		
+		tmpCost = calculate_cost(D,F, sol)	;
 
 		if(tmpCost > tmpBestCost && tmpCost < xcost) {
+		//	cout << "---------- modif  " << (long)xcost << " " << (long)tmpCost << " " << (long)tmpBestCost << endl;
 			index.clear();
 			index.push_back(i);
 			tmpBestCost = tmpCost;
 			*modif = true;
 		}
 		else if (tmpCost == tmpBestCost && tmpCost < xcost) {
-		//	cout << "---------- equalty" << endl;
+			//cout << "---------- equalty" << endl;
 			if (index[i] == -1) index.clear();
 			index.push_back(i);
 		}
@@ -265,8 +254,8 @@ int indexOfMaxValue2(vector<int> v) {
 
 
 
-float updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
-	float sum = 0;
+long updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
+	long sum = 0;
 	for (int i = 0; i < sol.size(); i++) {
 		sum += D[i][ti]*F[sol[i]][sol[ti]];
 		sum += D[i][tj]*F[sol[i]][sol[tj]];
@@ -276,10 +265,10 @@ float updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
 	return sum;
 }
 
-/*int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float comparative_cost) {
-	float solCost = calculate_cost(D,F,sol);
-	//float tmpcost;
-	float secondcost = solCost;
+/*int betterSols(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long comparative_cost) {
+	long solCost = calculate_cost(D,F,sol);
+	//long tmpcost;
+	long secondcost = solCost;
 	int nb = 0;
 	for (int i = 0; i < possibilities.size(); i++) {
 	//	tmpcost = comparative_cost;
@@ -303,13 +292,13 @@ float updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
 	return nb;
 }*/
 
-/*int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost, bool * modif) {
-	float tmpBestCost = (*bestCost);
+/*int checkBetter(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost, bool * modif) {
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
+		long tmpCost = currentCost;
 
 	//	tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
 
@@ -340,14 +329,14 @@ float updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
 	return index[0];
 }*/
 
-/*	int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost,  bool * modif) {
+/*	int checkWorst(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost,  bool * modif) {
 //	cout << " ###############################################" << endl;
-	float tmpBestCost = (*bestCost);
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
+		long tmpCost = currentCost;
 
 	//	tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
 
@@ -383,13 +372,13 @@ float updateCost(int **D, int** F, vector<int> sol, int ti, int tj) {
 	return index[0];
 }
 
-int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost, bool * modif) {
-	float tmpBestCost = (*bestCost);
+int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost, bool * modif) {
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
+		long tmpCost = currentCost;
 
 	//	tmpCost -= updateCost(D,F,sol, possibilities[i].first,possibilities[i].second );
 
@@ -425,14 +414,14 @@ int checkBetter2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > poss
 	return index[0];
 }
 
-int checkWorst2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, float * bestCost, float currentCost, float xcost,  bool * modif) {
+int checkWorst2(int** D, int ** F, vector<int> sol, vector<pair<int,int> > possibilities, long * bestCost, long currentCost, long xcost,  bool * modif) {
 //	cout << " ###############################################" << endl;
-	float tmpBestCost = (*bestCost);
+	long tmpBestCost = (*bestCost);
 	vector<int> index;
 	index.push_back(-1);
 
 	for (int i = 0; i < possibilities.size(); i++) {
-		float tmpCost = currentCost;
+		long tmpCost = currentCost;
 
 		iter_swap(sol.begin() + possibilities[i].first, sol.begin() + possibilities[i].second);
 
